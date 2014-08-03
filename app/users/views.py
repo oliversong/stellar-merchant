@@ -15,9 +15,8 @@ def load_user(user_id):
 def login_view():
   form = LoginForm(request.form)
   if form.validate_on_submit():
-    user = form.get_user()
-    login_user(user)
     flash("Logged in successfully.")
+    login_user(form.user)
     return redirect('/home')
   return render_template('users/login.html', form=form)
 
