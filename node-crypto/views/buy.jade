@@ -6,16 +6,16 @@ block content
   script.
     window.astral = new Astral('PF6Kez/fmer2eAq+CZrqjxF02P1mDXXYxgN9PRHp5V4=','oli')
   div.
-    <h1>Sample shopping cart site- buy credits</h1>
+    <h1>Sample shopping cart site- cash in</h1>
 
     <h3>Shopping Cart</h3>
     <div>
       <ul>
-        <li>$20 Gift Card</li>
+        <li>$20 Shiny Trinket</li>
       </ul>
     </div>
     <button id='paywith'>Pay with stellar</button>
   script.
     $('#paywith').click(function(){
-      astral.buyAstralGiftCard('20')
+      astral.payWithAstral('20')
     })

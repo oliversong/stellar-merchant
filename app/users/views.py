@@ -44,14 +44,66 @@ def home():
   user = db.session.query(User).filter_by(id=session['user_id']).first()
   return render_template('users/home.html', user=user)
 
-@mod.route('/pay')
+@mod.route('/pay', methods=('GET',"POST"))
 @login_required
 def pay():
-  username = request.args['username']
-  auth_token = request.args['auth_token']
+  username = session['wtf']['username']
+  auth_token = session['wtf']['auth_token']
   user = db.session.query(User).filter_by(id=session['user_id']).first()
-  other = db.session.query(User).filter_by(username=username, authToken=auth_token).first()
-  price = request.args['price']
+  other = db.session.query(User).filter_by(username=username).first()
+  price = session['wtf']['price']
+  if request.method == 'POST':
+    # # gateway extend trust?
+    # url = 'https://live.stellar.org:9002'
+    # headers = {'content-type': 'application/json'}
+    # payload = {
+    #     "method": "submit",
+    #     "params": [
+    #         {
+    #             "secret": other.secret,
+    #             "tx_json": {
+    #                 "Account": other.address,
+    #                 "LimitAmount": {
+    #                     "currency": "AST",
+    #                     "issuer": other.address,
+    #                     "value": price
+    #                     },
+    #                 "TransactionType": "TrustSet"
+    #                 }
+    #             }
+    #         ]
+    #     }
+    # r1 = requests.post(url, data=json.dumps(payload), headers=headers)
+    # print r1.content
+    # if json.loads(r1.content)["result"]["status"] == "error":
+    #   return redirect(other.failure_target, code=302)
+    # customer pay
+    url = 'https://live.stellar.org:9002'
+    headers = {'content-type': 'application/json'}
+    payload = {
+        "method": "submit",
+        "params": [
+            {
+                "secret": user.secret,
+                "tx_json": {
+                    "Account": user.address,
+                    "Amount": {
+                        "currency": "AST",
+                        "issuer": other.address,
+                        "value": price
+                        },
+                    "Destination": other.address,
+                    "TransactionType": "Payment"
+                    }
+                }
+            ]
+        }
+    r2 = requests.post(url, data=json.dumps(payload), headers=headers)
+    if json.loads(r2.content)["result"]["status"] == "error":
+      return redirect(other.failure_target, code=302)
+    print r2.content
+    return redirect(other.redirect_endpoint, code=302)
+
   return render_template('/users/pay.html', user=user, merchant=other, price=price)
 
 @mod.route('/gift', methods=('GET', 'POST'))
@@ -111,7 +163,7 @@ def gift():
     r2 = requests.post(url, data=json.dumps(payload), headers=headers)
     if json.loads(r2.content)["result"]["status"] == "error":
       return redirect(other.failure_target, code=302)
-    print r1.content
+    print r2.content
     return redirect(other.redirect_target, code=302)
 
   return render_template('/users/gift.html', user=user, merchant=other, price=price)
