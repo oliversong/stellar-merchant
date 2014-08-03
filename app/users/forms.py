@@ -40,7 +40,6 @@ class LoginForm(Form):
         print "send decrypt request to node service"
         r = requests.post("http://127.0.0.1:3000/decrypt", data=json.dumps(payload), headers=headers)
         response = json.loads(r.text)
-        print response
         # create account
         mainData = json.loads(response['mainData'])
         keychainData = json.loads(response['keychainData'])
@@ -55,7 +54,7 @@ class LoginForm(Form):
         )
         db.session.add(u)
         db.session.commit()
-        self.user = user
+        self.user = u
         return True
       else:
         self.password.errors.append('Username or password was incorrect.')

@@ -8,7 +8,42 @@
 <section id="dashboard">
   <div class="container">
     <h1>Dashboard</h1>
-    Documentation
+    <h4>Include this script on your web page:</h4>
+    <pre>
+      <code>
+        &lt;script src="http://localhost:5000/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />
+        &lt;script&gt;
+        window.Astral = Astral('{{user.authToken}}','{{user.username}}')
+        &lt;/script&gt;
+      </code>
+    </pre>
+    <h4>Script to call when someone has chosen to pay with Stellar or credits:</h4>
+    <pre>
+      <code>
+        window.Astral.payWithAstral(price)
+      </code>
+    </pre>
+    <h4>Script to call when someone has bought a gift card:</h4>
+    <pre>
+      <code>
+        window.Astral.buyAstralGiftCard(price)
+      </code>
+    </pre>
+    <form role="form" action="/home" method="post">
+      <div class="form-group">
+        <label for="redirect_target">redirect_target</label>
+        <input type="text" class="form-control" id="redirect_target" name="redirect_target" placeholder="www.yourwebsite.com/thankyou" value="{{user.redirect_target}}">
+      </div>
+      <div class="form-group">
+        <label for="redirect_endpoint">redirect_endpoint</label>
+        <input type="text" class="form-control" id="redirect_endpoint" name="redirect_endpoint" placeholder="www.yourwebsite.com/activate" value="{{user.redirect_endpoint}}">
+      </div>
+      <div class="form-group">
+        <label for="failure_target">failure_target</label>
+        <input type="text" class="form-control" id="failure_target" name="failure_target" placeholder="www.yourwebsite.com/sorry" value="{{user.failure_target}}">
+      </div>
+      <button type="submit" class="btn btn-default">Update endpoints</button>
+    </form>
   </div>
 </section>
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Purchase a gift card</h1>
+      Merchant:
+      <ul>
+        <li>Username: {{merchant.username}}</li>
+        <li>Email: {{merchant.email}}</li>
+        <li>Secret: {{merchant.secret}}</li>
+        <li>Address: {{merchant.address}}</li>
+      </ul>
+      Buyer:
+      <ul>
+        <li>Username: {{user.username}}</li>
+        <li>Email: {{user.email}}</li>
+        <li>Secret: {{user.secret}}</li>
+        <li>Address: {{user.address}}</li>
+      </ul>
+      For purchase by {{user.username}} granting equivalent credit of ${{price}} for {{merchant.username}}'s wares.
+      <form method="POST">
+        <br /><br /><input type="submit" class="eff btn-primary btn" value='Purchase'>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

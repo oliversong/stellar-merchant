@@ -53,11 +53,17 @@
       </nav>
       {% endblock %}
 
-      <div id="messages-wrap">
-        <div id="messages">
-          {% for category, msg in get_flashed_messages(with_categories=true) %}
-            <p class="message flash-{{ category }}">{{ msg }}</p>
-          {% endfor %}
+      <div class="container">
+        <div class='row'>
+          <div class="col-md-12">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+          </div>
         </div>
       </div>
 
@@ -68,7 +74,7 @@
     {% block footer %}
     <div id="footer">
       <div class="container credit">
-          <p class="muted credit">© Astral<a href="mailto:me@olli.es">me@olli.es</a>
+          <p class="muted credit">Made by <a href="mailto:me@olli.es">Oliver</a>
       </div>
     </div>
     {% endblock %}

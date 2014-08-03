@@ -1,5 +1,21 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js', type='text/javascript')
+  script(src='http://localhost:5000/static/js/astral.js', type='text/javascript')
+  script.
+    window.astral = new Astral('PF6Kez/fmer2eAq+CZrqjxF02P1mDXXYxgN9PRHp5V4=','oli')
+  div.
+    <h1>Sample shopping cart site</h1>
+
+    <h3>Shopping Cart</h3>
+    <div>
+      <ul>
+        <li>$20 Gift Card</li>
+      </ul>
+    </div>
+    <button id='paywith'>Pay with stellar</button>
+  script.
+    $('#paywith').click(function(){
+      astral.buyAstralGiftCard('20')
+    })

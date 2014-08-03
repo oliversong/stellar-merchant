@@ -6,4 +6,12 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/goback', function(req, res) {
+  res.render('great');
+});
+
+router.get('/failure', function(req, res) {
+  res.render('failure');
+});
+
 module.exports = router;

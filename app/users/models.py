@@ -11,6 +11,9 @@ class User(db.Model):
   updateToken = db.Column(db.String(150))
   secret = db.Column(db.String(150))
   address = db.Column(db.String(150))
+  redirect_target = db.Column(db.String(150))
+  redirect_endpoint = db.Column(db.String(150))
+  failure_target = db.Column(db.String(150))
   role = db.Column(db.SmallInteger, default=USER.USER)
   status = db.Column(db.SmallInteger, default=USER.NEW)
 
