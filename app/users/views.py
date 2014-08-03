@@ -20,17 +20,19 @@ def login_view():
   if form.validate_on_submit():
     flash("Logged in successfully.")
     login_user(form.user)
-    if '?' in request.args.get('next'):
-      what = request.args.get('next')
-      split = what.split('?')
-      request.args = {
-              "next": split[0]
-              }
-      for x in split[1].split('&'):
-        y = x.split('=')
-        request.args[y[0]]=y[1]
-      session['wtf'] = request.args
-    return redirect(request.args["next"] or "/home")
+    if len(request.args.items())!=0:
+      if '?' in request.args.get('next'):
+        what = request.args.get('next')
+        split = what.split('?')
+        request.args = {
+                "next": split[0]
+                }
+        for x in split[1].split('&'):
+          y = x.split('=')
+          request.args[y[0]]=y[1]
+        session['wtf'] = request.args
+      return redirect(request.args["next"] or "/home")
+    return redirect('/home')
   return render_template('users/login.html', form=form)
 
 @mod.route('/home', methods=('GET', 'POST'))
