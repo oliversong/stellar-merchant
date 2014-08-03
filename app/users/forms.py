@@ -1,11 +1,14 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField, BooleanField, validators
-from wtforms.validators import DataRequired, EqualTo, Email
+from wtforms.validators import DataRequired, EqualTo
 from app import db
 from app.users.models import User
+import pyscrypt
+import requests
+import json
 
 class LoginForm(Form):
-  email = TextField('Email address', [DataRequired(), Email()])
+  username = TextField('Username', [DataRequired()])
   password = PasswordField('Password', [DataRequired()])
 
   def __init__(self, *args, **kwargs):
@@ -20,43 +23,29 @@ class LoginForm(Form):
     user = self.get_user()
 
     if user is None:
-      self.email.errors.append('Email or password was incorrect.')
+      # scrypt hash then query API for user
+      hashed = self.derive_id(self.username.data, self.password.data)
+      payload = {"id": hashed}
+      url = 'https://wallet.stellar.org/wallets/show'
+      headers = {'content-type': 'application/json'}
+      r = requests.post(url, data=json.dumps(payload), headers=headers)
+      print(r.text)
       return False
 
     if user.password != self.password.data:
-      self.password.errors.append('Email or password was incorrect.')
+      self.password.errors.append('Username or password was incorrect.')
       return False
 
     self.user = user
     return True
 
   def get_user(self):
-    print self.email.data
-    return db.session.query(User).filter_by(email=self.email.data).first()
+    return db.session.query(User).filter_by(username=self.username.data).first()
 
-class RegistrationForm(Form):
-  email = TextField('Email address', [DataRequired(), Email()])
-  password = PasswordField('Password', [DataRequired()])
-  confirm = PasswordField('Repeat Password', [
-      DataRequired(),
-      EqualTo('password', message='Passwords must match')
-      ])
+  def derive_id(self, username, password):
+    credentials = (username.lower() + password).encode('ascii',errors='backslashreplace')
+    salt = credentials.encode('ascii',errors='backslashreplace')
 
-  def __init__(self, *args, **kwargs):
-    Form.__init__(self, *args, **kwargs)
-    self.user = None
+    hashed = pyscrypt.hash(credentials, salt, 2048, 8, 1, 32)
 
-  def validate(self):
-    rv = Form.validate(self)
-    if not rv:
-      return False
-
-    if db.session.query(User).filter_by(email=self.email.data).count() > 0:
-      self.email.errors.append('Account already exists')
-      return False
-
-    return True
-
-  def get_user(self):
-    print self.email.data
-    return db.session.query(User).filter_by(email=self.email.data).first()
+    return hashed.encode('hex')

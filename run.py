@@ -5,12 +5,6 @@ from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 from app import app
 
-print("""
-
-    Stellar merchant application
-
-""")
-
 if app.config['ENV'] == 'development':
     if __name__ == "__main__":
         app.run()

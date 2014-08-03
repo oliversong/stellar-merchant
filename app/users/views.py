@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, login_manager
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm
 from app.users.models import User
 from tornado import web, ioloop
 
@@ -20,18 +20,6 @@ def login_view():
     flash("Logged in successfully.")
     return redirect('/home')
   return render_template('users/login.html', form=form)
-
-@mod.route('/signup', methods=('GET', 'POST'))
-def register_view():
-  form = RegistrationForm(request.form)
-  if form.validate_on_submit():
-    user = User()
-    form.populate_obj(user)
-    db.session.add(user)
-    db.session.commit()
-    login_user(user)
-    return redirect('/home')
-  return render_template('users/register.html', form=form)
 
 @mod.route('/home')
 @login_required
