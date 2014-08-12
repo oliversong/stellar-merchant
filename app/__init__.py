@@ -14,9 +14,11 @@ db = SQLAlchemy(app) # init DB conn
 login_manager = LoginManager(app)
 login_manager.login_view = "users.login_view"
 
-# register users module
+# register modules
 from app.users.views import mod as usersModule
+from app.gift_cards.views import mod as gcModule
 app.register_blueprint(usersModule)
+app.register_blueprint(gcModule)
 
 def initdb():
   db.drop_all()
@@ -35,7 +37,7 @@ def not_found(error):
 def index():
     return render_template('index.html')
 
-@app.route("/about")
+@app.route("/about/")
 def about():
     return render_template('about.html')
 
