@@ -8,23 +8,51 @@ import json
 
 mod = Blueprint('gift_cards', __name__)
 
-@mod.route('/card/', methods=['POST', 'DELETE', 'PUT'])
+@mod.route('/newCard/', methods=['POST'])
 @login_required
 def newCard():
+    new_card_name = request.form['cardName']
+    new_card_cost = request.form['cardCost']
+    new_card_credit = request.form['cardCredit']
+    if (not new_card_cost.isdigit()) or (not new_card_credit.isdigit()):
+        flash('Cost or credit not a number!')
+        return redirect(url_for('users.home'))
+    if (not new_card_cost) or (not new_card_credit) or (not new_card_name):
+        flash('Card missing fields!')
+    gc = GiftCard(new_card_name, new_card_cost, new_card_credit)
+    g.user.gift_cards.append(gc)
+    db.session.commit()
+    flash('Card created.')
+    return redirect(url_for('users.home'))
+
+@mod.route('/card/', methods=['POST', 'DELETE', 'PUT'])
+@login_required
+def card():
     if request.method == 'POST':
         new_card_name = request.form['cardName']
         new_card_cost = request.form['cardCost']
         new_card_credit = request.form['cardCredit']
+        if (not new_card_cost.isdigit()) or (not new_card_credit.isdigit()):
+            return 'not_number', 406
+        if (not new_card_cost) or (not new_card_credit) or (not new_card_name):
+            return 'missing_fields', 406
         gc = GiftCard(new_card_name, new_card_cost, new_card_credit)
         g.user.gift_cards.append(gc)
         db.session.commit()
-        return redirect(url_for('users.home'))
+        return str(gc.id), 200
     elif request.method == 'DELETE':
         gc = db.session.query(GiftCard).filter(GiftCard.id == request.form['id']).first()
         db.session.delete(gc)
         db.session.commit()
-        return 'OK'
+        return 'OK', 200
     else: #PUT
+        new_card_name = request.form['cardName']
+        new_card_cost = request.form['cardCost']
+        new_card_credit = request.form['cardCredit']
+        if (not new_card_cost.isdigit()) or (not new_card_credit.isdigit()):
+            return 'not_number', 406
+        if (not new_card_cost) or (not new_card_credit) or (not new_card_name):
+            return 'missing_fields', 406
         gc = db.session.query(GiftCard).filter(GiftCard.id == request.form['id']).first()
         gc.name = request.form['cardName']
         gc.cost = request.form['cardCost']

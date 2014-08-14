@@ -1,3 +1,4 @@
+from flask import g
 from app import db
 from app.users import constants as USER
 
@@ -14,8 +15,8 @@ class User(db.Model):
     redirect_target = db.Column(db.String(150))
     redirect_endpoint = db.Column(db.String(150))
     failure_target = db.Column(db.String(150))
-    role = db.Column(db.SmallInteger, default=USER.USER)
-    status = db.Column(db.SmallInteger, default=USER.NEW)
+    role = db.Column(db.String(60), default=USER.USER)
+    status = db.Column(db.String(60), default=USER.NEW)
     gift_cards = db.relationship("GiftCard", backref="user")
 
     def __init__(self, username, password, email, authToken, updateToken, secret, address):
@@ -36,11 +37,14 @@ class User(db.Model):
     def is_authenticated(self):
         return True
 
-    def is_active(self):
-        return True
-
     def is_anonymous(self):
         return False
+
+    def is_new(self):
+        return self.status == USER.NEW
+
+    def is_active(self):
+        return True
 
     def get_id(self):
         return unicode(self.id)

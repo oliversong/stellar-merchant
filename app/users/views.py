@@ -17,8 +17,9 @@ def load_user(user_id):
 def login_view():
     form = LoginForm(request.form)
     if form.validate_on_submit():
-        flash("Logged in successfully.")
         login_user(form.user)
+        if not form.user.is_new():
+            flash("Logged in successfully.")
         if len(request.args.items())!=0:
             if '?' in request.args.get('next'):
                 what = request.args.get('next')
@@ -30,20 +31,52 @@ def login_view():
                     y = x.split('=')
                     request.args[y[0]]=y[1]
                 session['wtf'] = request.args
-            return redirect(request.args["next"] or "/home")
+            return redirect(request.args["next"] or url_for('users.home'))
         return redirect(url_for('users.home'))
     return render_template('users/login.html', form=form)
 
-@mod.route('/home/', methods=('GET', 'POST'))
+@mod.route('/endpoints/', methods=['POST'])
 @login_required
-def home():
-    if request.method == 'POST':
+def endpoints():
+    if request.form['isWalkthrough'] == "true":
+        if (not request.form['redirect_target']) or (not request.form['redirect_endpoint']) or (not request.form['failure_target']):
+            return 'missing_fields', 406
         g.user.redirect_target = request.form['redirect_target']
         g.user.redirect_endpoint = request.form['redirect_endpoint']
         g.user.failure_target = request.form['failure_target']
         db.session.commit()
+        return "OK", 200
+    else:
+        if (not request.form['redirect_target']) or (not request.form['redirect_endpoint']) or (not request.form['failure_target']):
+            flash('Missing some endpoints!')
+            return redirect(url_for('users.home'))
+        g.user.redirect_target = request.form['redirect_target']
+        g.user.redirect_endpoint = request.form['redirect_endpoint']
+        g.user.failure_target = request.form['failure_target']
+        db.session.commit()
+        flash("Endpoints updated!")
+        return redirect(url_for('users.home'))
+
+
+@mod.route('/make_active/', methods=['POST'])
+@login_required
+def make_active():
+    g.user.status = "ACTIVE"
+    db.session.commit()
+    return "OK"
+
+@mod.route('/home/', methods=('GET', 'POST'))
+@login_required
+def home():
     user = db.session.query(User).filter_by(id=session['user_id']).first()
-    return render_template('users/home.html', user=user)
+    if user.is_new():
+        return render_template('users/walkthrough.html', user=user)
+    else:
+        return render_template('users/home.html', user=user)
+
+@mod.route('/docs/', methods=['GET'])
+def docs():
+    return render_template('doc.html')
 
 @mod.route('/pay/', methods=('GET',"POST"))
 @login_required
@@ -126,7 +159,7 @@ def gift():
                     "LimitAmount": {
                             "currency": "AST",
                             "issuer": other.address,
-                            "value": price
+                            "value": 10000
                             },
                     "TransactionType": "TrustSet"
                 }

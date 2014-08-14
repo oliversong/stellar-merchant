@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block script %}
+<script src="/static/js/walkthrough.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container ohBoy">
+  <div id="slide1" style="opacity:0;margin-top:20px;">
+
+    <div class="row">
+      <div class="col-md-12 slide1Header">
+        <h1>Create your first gift card</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 slide1Form">
+        <form role="form">
+          <div class="form-group">
+            <label for="cardName">Card name</label>
+            <input type="text" class="form-control" id="cardName" name="cardName" placeholder="Card name">
+          </div>
+          <div class="form-group">
+            <label for="cardCost">Cost</label>
+            <div class="input-group">
+              <div class="input-group-addon">$</div>
+              <input type="text" class="form-control" id="cardCost" name="cardCost" placeholder="The USD amount your customer pays.">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cardCredit">Credit amount</label>
+            <div class="input-group">
+              <div class="input-group-addon">$</div>
+              <input type="text" class="form-control" id="cardCredit" name="cardCredit" placeholder="The USD amount of credit your customer gets">
+            </div>
+          </div>
+          <div class="errorBox1"></div>
+          <button type="button" class="btn btn-primary goTo2">Create Card</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="slide2" style="opacity:0;margin-top:20px;">
+    <div class="row">
+      <div class="col-md-12 slide1Header">
+        <h1>Put this in your checkout flow</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 slide1Form">
+        <h4>Include this script on the page:</h4>
+        <pre>&lt;script src="https://www.astralproject.us/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />&lt;script&gt;<br />  Astral = new Astral('{{user.authToken}}','{{user.username}}');<br />&lt;/script&gt;</pre>
+        <h4>Call this after someone has bought a gift card:</h4>
+        <pre>Astral.buyAstralGiftCard("CARD_ID")</pre>
+        <h4>Call this when someone is paying with a gift card:</h4>
+        <pre>Astral.payWithAstral("CARD_ID")</pre>
+        Where <code>CARD_ID</code> is your gift card's ID. The ID of the card you just created is: <kbd><span id="cardId"></span></kbd>.
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 slide1Header">
+        <button type="button" class="btn btn-primary btn-lg goTo3">All good!</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="slide3" style="opacity:0;margin-top:20px;">
+    <div class="row">
+      <div class="col-md-12 slide1Header">
+        <h1>Set Your Redirect URLs</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 slide1Form">
+        <form role="form">
+          <div class="form-group">
+            <label for="redirect_target">redirect_target: URL to go to after someone buys a Gift Card</label>
+            <input type="text" class="form-control" id="redirect_target" name="redirect_target" placeholder="http://www.yourwebsite.com/thankyou" value="{{user.redirect_target if user.redirect_target else ''}}">
+          </div>
+          <div class="form-group">
+            <label for="redirect_endpoint">redirect_endpoint: URL to go to after someone makes a purchase with a Gift Card</label>
+            <input type="text" class="form-control" id="redirect_endpoint" name="redirect_endpoint" placeholder="http://www.yourwebsite.com/activate" value="{{user.redirect_endpoint if user.redirect_endpoint else ''}}">
+          </div>
+          <div class="form-group">
+            <label for="failure_target">failure_target: URL to go to if payment fails</label>
+            <input type="text" class="form-control" id="failure_target" name="failure_target" placeholder="http://www.yourwebsite.com/sorry" value="{{user.failure_target if user.failure_target else ''}}">
+          </div>
+        </form>
+        <div class="errorBox2"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 slide1Header">
+        <button type="button" class="btn btn-primary btn-lg doneDeal">Okay!</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

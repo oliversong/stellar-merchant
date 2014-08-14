@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Integrating with Astral</h1>
+      <h4>Include this script on your web page:</h4>
+      <pre>&lt;script src="https://www.astralproject.us/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />&lt;script&gt;<br />  Astral = new Astral('{{g.user.authToken if g.user else "AUTH_TOKEN"}}','{{g.user.username if g.user else "USERNAME"}}');<br />&lt;/script&gt;</pre>
+      <h4>Call this when someone wants to pay with a gift card:</h4>
+      <pre>Astral.payWithAstral('CARD_ID')</pre>
+      <h4>Call this when someone has bought a gift card:</h4>
+      <pre>Astral.buyAstralGiftCard('CARD_ID')</pre>
+    </div>
+  </div>
+</div>
+{% endblock %}

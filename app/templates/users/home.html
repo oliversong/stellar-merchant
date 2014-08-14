@@ -5,101 +5,93 @@
 {% endblock %}
 
 {% block content %}
-<section id="dashboard">
-  <div class="container">
-    <h1>Dashboard</h1>
-    <h4>Gift cards</h4>
-    <table class="table">
-      <thead>
-        <tr>
-          <td>Card name</td>
-          <td>Cost</td>
-          <td>Credit amount</td>
-          <td>ID</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </thead>
-      <tbody>
-      {% if user.gift_cards %}
-        {% for gc in user.gift_cards %}
-        <tr>
-          <td class="cardName">{{gc.name}}</td>
-          <td class="cardCost">{{gc.cost}}</td>
-          <td class="cardCredit">{{gc.credit}}</td>
-          <td class="cardId">{{gc.id}}</td>
-          <td><a class="save" style="display:none;" href="#">Save</a><a class="edit" href="#">Edit</a></td>
-          <td><a class="delete" href="#">Delete</a></td>
-        </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td></td>
-          <td></td>
-          <td>Looks like you haven't made any gift cards yet!</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      {% endif %}
-      </tbody>
-    </table>
-    <form role="form" method="POST" action="{{url_for('gift_cards.newCard')}}">
-      <h3>Create new gift card</h3>
-      <div class="form-group">
-        <label for="cardName">Card name</label>
-        <input type="text" class="form-control" id="cardName" name="cardName" placeholder="Card name">
-      </div>
-      <div class="form-group">
-        <label for="cardCost">Cost</label>
-        <input type="text" class="form-control" id="cardCost" name="cardCost" placeholder="The USD amount your customer pays.">
-      </div>
-      <div class="form-group">
-        <label for="cardCredit">Credit amount</label>
-        <input type="text" class="form-control" id="cardCredit" name="cardCredit" placeholder="The USD amount of credit your customer gets">
-      </div>
-      <button type="submit" class="btn btn-default">Create Card</button>
-    </form>
-
-    <h1>Integrate with Astral</h1>
-    <h4>Include this script on your web page:</h4>
-    <pre>
-      <code>
-        &lt;script src="http://localhost:5000/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />
-        &lt;script&gt;
-        Astral = new Astral('{{user.authToken}}','{{user.username}}');
-        &lt;/script&gt;
-      </code>
-    </pre>
-    <h4>Script to call when someone has chosen to pay with Stellar or credits:</h4>
-    <pre>
-      <code>
-        Astral.payWithAstral(price)
-      </code>
-    </pre>
-    <h4>Script to call when someone has bought a gift card:</h4>
-    <pre>
-      <code>
-        Astral.buyAstralGiftCard(price)
-      </code>
-    </pre>
-
-    <h1>Redirect URLs</h1>
-    <form role="form" action="/home" method="post">
-      <div class="form-group">
-        <label for="redirect_target">redirect_target: URL to go to after someone buys a gift card</label>
-        <input type="text" class="form-control" id="redirect_target" name="redirect_target" placeholder="www.yourwebsite.com/thankyou" value="{{user.redirect_target}}">
-      </div>
-      <div class="form-group">
-        <label for="redirect_endpoint">redirect_endpoint: URL to go to after someone buys anything with Stellar</label>
-        <input type="text" class="form-control" id="redirect_endpoint" name="redirect_endpoint" placeholder="www.yourwebsite.com/activate" value="{{user.redirect_endpoint}}">
-      </div>
-      <div class="form-group">
-        <label for="failure_target">failure_target: URL to go to if payment fails</label>
-        <input type="text" class="form-control" id="failure_target" name="failure_target" placeholder="www.yourwebsite.com/sorry" value="{{user.failure_target}}">
-      </div>
-      <button type="submit" class="btn btn-default">Update endpoints</button>
-    </form>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Dashboard</h1>
+      <h4>Gift cards</h4>
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Card name</td>
+            <td>Cost</td>
+            <td>Credit amount</td>
+            <td>ID</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+        {% if user.gift_cards %}
+          {% for gc in user.gift_cards %}
+          <tr>
+            <td class="cardName">{{gc.name}}</td>
+            <td class="cardCost">{{gc.cost}}</td>
+            <td class="cardCredit">{{gc.credit}}</td>
+            <td class="cardId">{{gc.id}}</td>
+            <td><a class="save" style="display:none;" href="#">Save</a><a class="edit" href="#">Edit</a></td>
+            <td><a class="delete" href="#">Delete</a></td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td></td>
+            <td></td>
+            <td>Looks like you haven't made any gift cards yet!</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endif %}
+        </tbody>
+      </table>
+    </div>
   </div>
-</section>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>New Gift Card</h3>
+      <form role="form" action="/newCard/" method="POST">
+        <div class="form-group">
+          <label for="cardName">Card name</label>
+          <input type="text" class="form-control" id="cardName" name="cardName" placeholder="Card name">
+        </div>
+        <div class="form-group">
+          <label for="cardCost">Cost</label>
+          <div class="input-group">
+            <div class="input-group-addon">$</div>
+            <input type="text" class="form-control" id="cardCost" name="cardCost" placeholder="The USD amount your customer pays.">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cardCredit">Credit amount</label>
+          <div class="input-group">
+            <div class="input-group-addon">$</div>
+            <input type="text" class="form-control" id="cardCredit" name="cardCredit" placeholder="The USD amount of credit your customer gets">
+          </div>
+        </div>
+        <div class="errorBox"></div>
+        <button type="submit" class="btn btn-default">Create Card</button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <h3>Redirect URLs</h3>
+      <form role="form" action="/endpoints/" method="POST">
+        <input type="text" hidden name="isWalkthrough" value="false">
+        <div class="form-group">
+          <label for="redirect_target">URL to go to after someone buys a Gift Card</label>
+          <input type="text" class="form-control" id="redirect_target" name="redirect_target" placeholder="www.yourwebsite.com/thankyou" value="{{user.redirect_target if user.redirect_target else ''}}">
+        </div>
+        <div class="form-group">
+          <label for="redirect_endpoint">URL to go to after someone makes a purchase with a Gift Card</label>
+          <input type="text" class="form-control" id="redirect_endpoint" name="redirect_endpoint" placeholder="www.yourwebsite.com/activate" value="{{user.redirect_endpoint if user.redirect_endpoint else ''}}">
+        </div>
+        <div class="form-group">
+          <label for="failure_target">URL to go to if payment fails</label>
+          <input type="text" class="form-control" id="failure_target" name="failure_target" placeholder="www.yourwebsite.com/sorry" value="{{user.failure_target if user.failure_target else ''}}">
+        </div>
+        <button type="submit" class="btn btn-default">Update endpoints</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

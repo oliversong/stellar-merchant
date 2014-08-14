@@ -46,7 +46,7 @@ $(document).ready(function(){
         $('.save', $(self).parent()).hide();
         $(self).show();
       }).fail(function(data){
-        console.log('something went wrong');
+        alert('One of your fields is incorrectly formatted or missing.');
       });
     }
   });
