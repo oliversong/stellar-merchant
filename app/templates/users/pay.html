@@ -8,17 +8,18 @@
       <ul>
         <li>Username: {{merchant.username}}</li>
         <li>Email: {{merchant.email}}</li>
-        <li>Secret: {{merchant.secret}}</li>
         <li>Address: {{merchant.address}}</li>
       </ul>
       Buyer:
       <ul>
         <li>Username: {{user.username}}</li>
         <li>Email: {{user.email}}</li>
-        <li>Secret: {{user.secret}}</li>
         <li>Address: {{user.address}}</li>
       </ul>
-      For purchase by {{user.username}} of Shiny Trinket for ${{price}}.
+      Item:
+      <ul>
+        <li><strong>${{price}}</strong> Shiny Trinket
+      </ul>
       <form method="POST">
         <br /><br /><input type="submit" class="eff btn-primary btn" value='Purchase'>
       </form>

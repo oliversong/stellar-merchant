@@ -3,9 +3,11 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, login_manager
 from forms import LoginForm
 from app.users.models import User
+from app.gift_cards.models import GiftCard
 from werkzeug.datastructures import ImmutableMultiDict
 import requests
 import json
+import urllib
 
 mod = Blueprint('users', __name__)
 
@@ -81,11 +83,14 @@ def docs():
 @mod.route('/pay/', methods=('GET',"POST"))
 @login_required
 def pay():
-    username = session['wtf']['username']
-    auth_token = session['wtf']['auth_token']
+    try:
+        auth_token = urllib.unquote(session['wtf']['auth_token']).decode('utf8')
+        price = session['wtf']['price']
+    except:
+        auth_token = urllib.unquote(request.args.get('auth_token')).decode('utf8')
+        price = request.args.get('price')
     user = db.session.query(User).filter_by(id=session['user_id']).first()
-    other = db.session.query(User).filter_by(username=username).first()
-    price = session['wtf']['price']
+    other = db.session.query(User).filter_by(authToken=auth_token).first()
     if request.method == 'POST':
         # # gateway extend trust?
         # url = 'https://live.stellar.org:9002'
@@ -141,11 +146,15 @@ def pay():
 @mod.route('/gift/', methods=('GET', 'POST'))
 @login_required
 def gift():
-    username = session['wtf']['username']
-    auth_token = session['wtf']['auth_token']
+    try:
+        auth_token = urllib.unquote(session['wtf']['auth_token']).decode('utf8')
+        gcid = session['wtf']['gcid']
+    except:
+        auth_token = urllib.unquote(request.args.get('auth_token')).decode('utf8')
+        gcid = request.args.get('gcid')
     user = db.session.query(User).filter_by(id=session['user_id']).first()
-    other = db.session.query(User).filter_by(username=username).first()
-    price = session['wtf']['price']
+    other = db.session.query(User).filter_by(authToken=auth_token).first()
+    gc = db.session.query(GiftCard).filter_by(id=gcid).first()
     if request.method == 'POST':
         # user extend trust
         url = 'https://live.stellar.org:9002'
@@ -181,7 +190,7 @@ def gift():
                     "Amount": {
                         "currency": "AST",
                         "issuer": other.address,
-                        "value": price
+                        "value": gc.credit
                     },
                     "Destination": user.address,
                     "TransactionType": "Payment"
@@ -194,7 +203,7 @@ def gift():
         print r2.content
         return redirect(other.redirect_target, code=302)
 
-    return render_template('/users/gift.html', user=user, merchant=other, price=price)
+    return render_template('/users/gift.html', user=user, merchant=other, gc=gc)
 
 @mod.route('/logout/')
 @login_required

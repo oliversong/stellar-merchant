@@ -50,12 +50,13 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2 slide1Form">
         <h4>Include this script on the page:</h4>
-        <pre>&lt;script src="https://www.astralproject.us/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />&lt;script&gt;<br />  Astral = new Astral('{{user.authToken}}','{{user.username}}');<br />&lt;/script&gt;</pre>
+        <pre>&lt;script src="https://www.astralproject.us/static/js/astral.js" type="text/javascript"&gt;&lt;/script&gt;'<br />&lt;script&gt;<br />  Astral = new Astral('{{user.authToken}}');<br />&lt;/script&gt;</pre>
         <h4>Call this after someone has bought a gift card:</h4>
-        <pre>Astral.buyAstralGiftCard("CARD_ID")</pre>
-        <h4>Call this when someone is paying with a gift card:</h4>
-        <pre>Astral.payWithAstral("CARD_ID")</pre>
+        <pre>Astral.buyAstralGiftCard('<kbd>CARD_ID</kbd>')</pre>
         Where <code>CARD_ID</code> is your gift card's ID. The ID of the card you just created is: <kbd><span id="cardId"></span></kbd>.
+        <h4>Call this when someone is paying with a gift card:</h4>
+        <pre>Astral.payWithAstral('<kbd>PRICE</kbd>')</pre>
+        Where <code>PRICE</code> is their purchase amount in USD. For example, <kbd>20</kbd>.
       </div>
     </div>
     <div class="row">
